@@ -1,5 +1,8 @@
 # test-compiler
 
+[![CI](https://github.com/P4suta/test-compiler/actions/workflows/ci.yml/badge.svg)](https://github.com/P4suta/test-compiler/actions/workflows/ci.yml)
+[![CodeQL](https://github.com/P4suta/test-compiler/actions/workflows/codeql.yml/badge.svg)](https://github.com/P4suta/test-compiler/actions/workflows/codeql.yml)
+
 `test-compiler` compiles a passing Gradle JVM test suite into deterministic counterfactual diagnostics. It does not replace JUnit, TestNG, Kotest, Spock, or Gradle `Test`; it asks whether the current tests distinguish a conservative implementation change, observe a semantic side effect, or survive only in one shared-state order.
 
 The engine makes no outbound network calls and provides no telemetry, AI diagnosis,
