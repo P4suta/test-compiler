@@ -14,7 +14,7 @@ dependencies {
     testImplementation(platform(libs.junit.bom))
     testImplementation(libs.junit.jupiter)
     testImplementation(libs.assertj)
-    testImplementation("org.testng:testng:7.11.0")
+    testImplementation("org.testng:testng:7.12.0")
     testRuntimeOnly(libs.junit.launcher)
 }
 
