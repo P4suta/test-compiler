@@ -1,0 +1,5 @@
+[tools]
+java = "corretto-21"
+
+[env]
+TEST_COMPILER_TELEMETRY = "disabled"

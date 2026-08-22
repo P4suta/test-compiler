@@ -1,0 +1,77 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing release tag (for example, v0.1.0)
+        required: true
+        type: string
+      confirmation:
+        description: Type RELEASE to publish all registries
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    if: ${{ inputs.confirmation == 'RELEASE' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    environment: release
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
+          ref: ${{ inputs.tag }}
+      - uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5
+        with:
+          distribution: corretto
+          java-version: 21
+      - uses: gradle/actions/wrapper-validation@0b6dd653ba04f4f93bf581ec31e66cbd7dcb644d # v4
+      - uses: gradle/actions/setup-gradle@0b6dd653ba04f4f93bf581ec31e66cbd7dcb644d # v4
+      - name: Validate release tag and project version
+        shell: bash
+        env:
+          RELEASE_TAG: ${{ inputs.tag }}
+        run: |
+          [[ "$RELEASE_TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([.-][0-9A-Za-z.-]+)?$ ]]
+          git rev-parse --verify "refs/tags/$RELEASE_TAG^{commit}"
+          PROJECT_VERSION="$(./gradlew properties -q | sed -n 's/^version: //p' | head -n 1)"
+          test "$RELEASE_TAG" = "v$PROJECT_VERSION"
+      - name: Verify publication inputs
+        run: ./gradlew :model:test :agent:test :engine:test :cli:test :gradle-plugin:test :intellij-plugin:verifyPlugin build
+      - name: Publish Maven Central and Gradle Plugin Portal
+        env:
+          CENTRAL_USERNAME: ${{ secrets.CENTRAL_USERNAME }}
+          CENTRAL_PASSWORD: ${{ secrets.CENTRAL_PASSWORD }}
+          SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
+          SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
+          GRADLE_PUBLISH_KEY: ${{ secrets.GRADLE_PUBLISH_KEY }}
+          GRADLE_PUBLISH_SECRET: ${{ secrets.GRADLE_PUBLISH_SECRET }}
+        run: ./gradlew publishAllPublicationsToCentralPortalRepository :gradle-plugin:publishPlugins
+      - name: Publish JetBrains Marketplace
+        env:
+          PUBLISH_TOKEN: ${{ secrets.JETBRAINS_MARKETPLACE_TOKEN }}
+          PRIVATE_KEY: ${{ secrets.JETBRAINS_PRIVATE_KEY }}
+          PRIVATE_KEY_PASSWORD: ${{ secrets.JETBRAINS_PRIVATE_KEY_PASSWORD }}
+          CERTIFICATE_CHAIN: ${{ secrets.JETBRAINS_CERTIFICATE_CHAIN }}
+        run: ./gradlew :intellij-plugin:signPlugin :intellij-plugin:publishPlugin
+      - name: Build release archives
+        run: ./gradlew :cli:distZip :intellij-plugin:buildPlugin
+      - uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65 # v2
+        with:
+          tag_name: ${{ inputs.tag }}
+          generate_release_notes: true
+          files: |
+            cli/build/distributions/*.zip
+            intellij-plugin/build/distributions/*.zip
+            model/build/libs/*.jar
+            agent/build/libs/*-all.jar
+            engine/build/libs/*-all.jar

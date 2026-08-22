@@ -1,0 +1,30 @@
+name: Feature request
+description: Propose a deterministic compiler diagnostic or integration
+title: "[Feature]: "
+labels: [enhancement, triage]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What test-suite blind spot or workflow problem should this solve?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behavior
+      description: Explain the deterministic observation, witness, and replay contract.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+  - type: checkboxes
+    id: scope
+    attributes:
+      label: Scope
+      options:
+        - label: The proposal does not require AI, telemetry, a hosted service, or automatic patch generation.
+          required: true

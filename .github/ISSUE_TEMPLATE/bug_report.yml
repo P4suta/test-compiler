@@ -1,0 +1,63 @@
+name: Bug report
+description: Report a reproducible problem in test-compiler
+title: "[Bug]: "
+labels: [bug, triage]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping improve test-compiler. Do not include credentials, proprietary source, or unredacted report values.
+  - type: input
+    id: version
+    attributes:
+      label: test-compiler version or commit
+      placeholder: 0.1.0 or commit SHA
+    validations:
+      required: true
+  - type: dropdown
+    id: interface
+    attributes:
+      label: Interface
+      options:
+        - Gradle plugin
+        - testc CLI
+        - IntelliJ plugin
+        - JSON or SARIF report
+        - Java agent or engine
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Include OS, JDK, Gradle, Kotlin, and test framework versions.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Minimal reproduction
+      description: Provide deterministic steps or a link to a minimal repository.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+    validations:
+      required: true
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Safety checks
+      options:
+        - label: I removed secrets and unredacted application values.
+          required: true
+        - label: I searched existing issues for this problem.
+          required: true

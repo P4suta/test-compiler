@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://p4suta.github.io/test-compiler/schema/run-report-v1.schema.json",
+  "title": "test-compiler authoritative run report v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "toolVersion", "generatedAt", "catalogStatus", "projectIdentityHash", "environment", "cache", "findings", "diagnostics"],
+  "properties": {
+    "schemaVersion": { "const": "1" },
+    "toolVersion": { "type": "string" },
+    "generatedAt": { "type": "string", "format": "date-time" },
+    "catalogStatus": { "enum": ["COMPLETE", "BASELINE_FAILED", "CANCELLED", "PARTIAL"] },
+    "projectIdentityHash": { "type": "string" },
+    "environment": { "$ref": "#/$defs/environment" },
+    "cache": { "$ref": "#/$defs/cache" },
+    "findings": { "type": "array", "items": { "$ref": "#/$defs/finding" } },
+    "diagnostics": { "type": "array", "items": { "$ref": "#/$defs/diagnostic" } }
+  },
+  "$defs": {
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "line", "column", "symbol"],
+      "properties": {
+        "path": { "type": "string" }, "line": { "type": "integer", "minimum": 1 },
+        "column": { "type": "integer", "minimum": 1 }, "symbol": { "type": "string" }
+      }
+    },
+    "plan": {
+      "type": "object", "additionalProperties": false,
+      "required": ["planId", "kind", "target", "operator", "iteration", "attributes"],
+      "properties": {
+        "planId": { "type": "string" }, "kind": { "enum": ["BEHAVIOR_GAP", "EFFECT_GAP", "ORDER_DEPENDENCY"] },
+        "target": { "type": "string" }, "operator": { "type": "string" }, "iteration": { "type": "integer", "minimum": 0 },
+        "attributes": { "type": "object", "additionalProperties": { "type": "string" } }
+      }
+    },
+    "witnessValue": {
+      "type": "object", "additionalProperties": false, "required": ["type", "value", "synthetic"],
+      "properties": { "type": { "type": "string" }, "value": { "type": "string" }, "synthetic": { "type": "boolean" } }
+    },
+    "witness": {
+      "type": "object", "additionalProperties": false, "required": ["arguments", "testSequence"],
+      "properties": {
+        "arguments": { "type": "array", "items": { "$ref": "#/$defs/witnessValue" } },
+        "testSequence": { "type": "array", "items": { "type": "string" } },
+        "expected": { "type": ["string", "null"] }, "counterfactual": { "type": ["string", "null"] }
+      }
+    },
+    "finding": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "kind", "status", "title", "message", "source", "impactedTests", "plan", "replayCommand"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^tc-[0-9a-f]{20}(-[0-9]+)?$" },
+        "kind": { "enum": ["BEHAVIOR_GAP", "EFFECT_GAP", "ORDER_DEPENDENCY"] },
+        "status": { "enum": ["PROVEN", "INCONCLUSIVE", "UNSUPPORTED", "BASELINED"] },
+        "title": { "type": "string" }, "message": { "type": "string" }, "source": { "$ref": "#/$defs/source" },
+        "impactedTests": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+        "plan": { "$ref": "#/$defs/plan" }, "witness": { "anyOf": [{ "$ref": "#/$defs/witness" }, { "type": "null" }] },
+        "replayCommand": { "type": "string" }, "normalizedTraceHash": { "type": ["string", "null"] },
+        "cacheReason": { "type": ["string", "null"] }, "inconclusiveReason": { "type": ["string", "null"] }
+      }
+    },
+    "diagnostic": {
+      "type": "object", "additionalProperties": false, "required": ["code", "severity", "message"],
+      "properties": { "code": { "type": "string" }, "severity": { "type": "string" }, "message": { "type": "string" }, "target": { "type": ["string", "null"] } }
+    },
+    "cache": {
+      "type": "object", "additionalProperties": false, "required": ["key", "hit", "cacheable"],
+      "properties": { "key": { "type": "string" }, "hit": { "type": "boolean" }, "cacheable": { "type": "boolean" }, "reason": { "type": ["string", "null"] } }
+    },
+    "environment": {
+      "type": "object", "additionalProperties": false, "required": ["javaVersion", "os", "configurationHash"],
+      "properties": { "javaVersion": { "type": "string" }, "gradleVersion": { "type": ["string", "null"] }, "os": { "type": "string" }, "configurationHash": { "type": "string" } }
+    }
+  }
+}

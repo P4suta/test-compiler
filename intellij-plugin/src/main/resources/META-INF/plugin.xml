@@ -1,0 +1,58 @@
+<idea-plugin>
+    <id>io.github.p4suta.test-compiler</id>
+    <name>test-compiler</name>
+    <vendor>p4suta</vendor>
+    <description><![CDATA[
+        Displays deterministic test-compiler findings and delegates check, replay, and baseline operations to Gradle.
+    ]]></description>
+
+    <depends>com.intellij.modules.platform</depends>
+    <depends>com.intellij.java</depends>
+    <depends>org.jetbrains.plugins.gradle</depends>
+    <depends>org.jetbrains.kotlin</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <projectService serviceImplementation="io.github.p4suta.testcompiler.intellij.ReportIndex"/>
+        <localInspection
+            language="JAVA"
+            shortName="TestCompilerFinding"
+            displayName="test-compiler counterfactual finding"
+            groupName="test-compiler"
+            enabledByDefault="true"
+            level="WARNING"
+            implementationClass="io.github.p4suta.testcompiler.intellij.TestCompilerInspection"/>
+        <localInspection
+            language="kotlin"
+            shortName="TestCompilerKotlinFinding"
+            displayName="test-compiler counterfactual finding"
+            groupName="test-compiler"
+            enabledByDefault="true"
+            level="WARNING"
+            implementationClass="io.github.p4suta.testcompiler.intellij.TestCompilerInspection"/>
+        <codeInsight.lineMarkerProvider
+            language="JAVA"
+            implementationClass="io.github.p4suta.testcompiler.intellij.TestCompilerLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider
+            language="kotlin"
+            implementationClass="io.github.p4suta.testcompiler.intellij.TestCompilerLineMarkerProvider"/>
+        <toolWindow
+            id="Test Compiler"
+            anchor="bottom"
+            factoryClass="io.github.p4suta.testcompiler.intellij.TestCompilerToolWindowFactory"/>
+    </extensions>
+
+    <actions>
+        <action id="TestCompiler.Check"
+                class="io.github.p4suta.testcompiler.intellij.CheckAction"
+                text="Run test-compiler Check"
+                description="Run the deterministic counterfactual check through Gradle"/>
+        <action id="TestCompiler.Replay"
+                class="io.github.p4suta.testcompiler.intellij.ReplayAction"
+                text="Replay Latest test-compiler Finding"
+                description="Replay the first finding in the current report through Gradle"/>
+        <action id="TestCompiler.Baseline"
+                class="io.github.p4suta.testcompiler.intellij.BaselineAction"
+                text="Baseline test-compiler Findings"
+                description="Explicitly baseline the current findings through Gradle"/>
+    </actions>
+</idea-plugin>
