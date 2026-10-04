@@ -32,11 +32,11 @@ jobs:
         with:
           distribution: corretto
           java-version: 21
-      - uses: github/codeql-action/init@db488ddef3bf6cb639b32c2e9a7c0a7ea8271d28 # v4
+      - uses: github/codeql-action/init@2892aa5e19bbd11bc0cff5427e3b750a04d9e3c2 # v4
         with:
           languages: java-kotlin
           build-mode: manual
       - uses: gradle/actions/setup-gradle@ed408507eac070d1f99cc633dbcf757c94c7933a # v4
       - name: Build analyzed code
         run: ./gradlew :model:classes :agent:classes :engine:classes :cli:classes :gradle-plugin:classes :intellij-plugin:classes --rerun-tasks --no-build-cache --no-daemon
-      - uses: github/codeql-action/analyze@db488ddef3bf6cb639b32c2e9a7c0a7ea8271d28 # v4
+      - uses: github/codeql-action/analyze@2892aa5e19bbd11bc0cff5427e3b750a04d9e3c2 # v4
