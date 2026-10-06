@@ -6,9 +6,9 @@ import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.plugins.signing.SigningExtension
 
 plugins {
-    kotlin("jvm") version "2.4.10" apply false
-    id("org.jetbrains.intellij.platform") version "2.18.1" apply false
-    id("com.gradle.plugin-publish") version "2.1.1" apply false
+    kotlin("jvm") version "2.4.20" apply false
+    id("org.jetbrains.intellij.platform") version "2.19.0" apply false
+    id("com.gradle.plugin-publish") version "2.2.1" apply false
 }
 
 allprojects {
