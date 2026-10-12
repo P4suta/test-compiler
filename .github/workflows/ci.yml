@@ -72,7 +72,7 @@ jobs:
       - uses: gradle/actions/wrapper-validation@ed408507eac070d1f99cc633dbcf757c94c7933a # v4
       - name: Build and verify 2025.3, 2026.1, and 2026.2 plugin compatibility
         run: ./gradlew :intellij-plugin:buildPlugin :intellij-plugin:verifyPlugin --stacktrace
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: intellij-plugin
           path: intellij-plugin/build/distributions/*.zip
