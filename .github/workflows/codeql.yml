@@ -36,7 +36,7 @@ jobs:
         with:
           languages: java-kotlin
           build-mode: manual
-      - uses: gradle/actions/setup-gradle@ed408507eac070d1f99cc633dbcf757c94c7933a # v4
+      - uses: gradle/actions/setup-gradle@3f5f9adaf7d9fecd50b5935e54106014257a94e6 # v6
       - name: Build analyzed code
         run: ./gradlew :model:classes :agent:classes :engine:classes :cli:classes :gradle-plugin:classes :intellij-plugin:classes --rerun-tasks --no-build-cache --no-daemon
       - uses: github/codeql-action/analyze@6f2ac81f5cd81fe351a197ba0b00d91d03cd2aee # v4
