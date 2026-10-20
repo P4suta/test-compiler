@@ -20,6 +20,8 @@ Select checks from the [affected source paths](../../.github/filters/ci.yml).
 Keep workflow validation and the required status on every change.
 Run the complete model and core suite on the minimum Java version on Linux.
 Keep instrumentation and worker tests for every declared runtime and host pair, using the core job for the minimum Linux pair.
+Use Temurin locally and in hosted jobs so the Java setup action and dependency tracking share a supported distribution.
+Pin the local Java release while retaining the declared compatibility versions.
 
 Test the current Gradle wrapper in the core job and the native host lanes.
 Keep the oldest supported Gradle and the existing Gradle 8 compatibility baseline in separate adapter lanes.
