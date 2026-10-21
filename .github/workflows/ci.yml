@@ -146,7 +146,22 @@ jobs:
     steps:
       - name: Check every selected result
         env:
-          RESULTS: ${{ toJSON(needs.*.result) }}
+          RESULTS: ${{ toJSON(needs) }}
+          CORE_SELECTED: ${{ needs.quality.outputs.core }}
+          GRADLE_SELECTED: ${{ needs.quality.outputs.gradle }}
+          IDE_SELECTED: ${{ needs.quality.outputs.ide }}
+          EVENT_NAME: ${{ github.event_name }}
         run: |
-          echo "$RESULTS"
-          jq -e 'all(.[]; IN("success", "skipped"))' <<< "$RESULTS"
+          set -euo pipefail
+          jq -e --arg core "$CORE_SELECTED" --arg gradle "$GRADLE_SELECTED" \
+            --arg ide "$IDE_SELECTED" --arg event "$EVENT_NAME" '
+            def expected($selected):
+              if $selected == "true" or $event == "workflow_dispatch"
+              then "success" else "skipped" end;
+            ([$core, $gradle, $ide] | all(. == "true" or . == "false")) and
+            .quality.result == "success" and
+            (.core.result == expected($core)) and
+            (.runtime.result == expected($core)) and
+            (."gradle-compatibility".result == expected($gradle)) and
+            (.intellij.result == expected($ide))
+            ' <<< "$RESULTS"
