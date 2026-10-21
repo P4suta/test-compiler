@@ -1,0 +1,18 @@
+name = "test-compiler"
+summary = "Find missing assertions and order dependencies in Java and Kotlin tests"
+install = """
+git clone https://github.com/P4suta/test-compiler.git
+cd test-compiler
+mise install
+mise exec -- sh ./gradlew :cli:installDist
+"""
+usage = """
+mise exec -- ./cli/build/install/testc/bin/testc --help
+"""
+usage_language = "sh"
+copyright = "2026 test-compiler contributors"
+license = "MIT OR Apache-2.0"
+
+[[consent]]
+contributor = "Yasunobu"
+evidence = "https://github.com/P4suta/test-compiler/commit/7d37bfc69a24412e4dbd3a9fbe4b094d9664739d"
