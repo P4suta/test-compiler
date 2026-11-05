@@ -3,7 +3,7 @@ plugins {
 }
 
 dependencies {
-    implementation("io.github.p4suta.walaru:jvm-model:0.1.0")
+    implementation("io.github.p4suta.walaru:jvm-model")
     implementation(libs.asm)
     implementation(libs.asm.commons)
     testImplementation(platform(libs.junit.bom))
