@@ -5,6 +5,7 @@ plugins {
 
 dependencies {
     api(project(":model"))
+    implementation("io.github.p4suta.walaru:jvm-runner")
     implementation(libs.jackson.databind)
     implementation(libs.jackson.kotlin)
     implementation(platform(libs.junit.bom))
